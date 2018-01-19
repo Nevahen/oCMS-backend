@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./dist/app.js",
+    "start": "node ./dist/server.js",
     "grunt": "grunt",
-    "dev": "nodemon ./dist/app.js"
+    "dev": "nodemon ./dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -24,10 +24,17 @@
   },
   "homepage": "https://github.com/Nevahen/oCMS-backend#readme",
   "devDependencies": {
+    "@types/express": "^4.11.0",
+    "@types/node": "^9.3.0",
     "grunt": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-ts": "^6.0.0-beta.17",
     "nodemon": "^1.14.11",
+    "tslint": "^5.9.1",
     "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
   }
 }
