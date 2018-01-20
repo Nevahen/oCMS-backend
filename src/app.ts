@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as pagesRoute from './routes/pages';
+import * as apiIndexRoute from './routes/index';
 
 class App{
 
@@ -19,9 +20,9 @@ class App{
         let router = express.Router();
         
         this.express.get('/', (req , res)=>{
-            res.send("Api")
+            res.send("TODO - direct public")
         });
-        this.express.use('/pages', pagesRoute);       
+        this.express.use('/api', apiIndexRoute);
     };   
 }
 

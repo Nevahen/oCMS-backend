@@ -20,7 +20,7 @@ export class Pages{
         return new Promise((resolve,reject)=>{
 
             if(isNaN(id) || !(id % 1 == 0)){
-                reject(new ApiError(404,"Test"));
+                reject(new ApiError(400,"Bad request"));
             }
             
             const sql = 'select * from ocms_pages where page_id = ?'

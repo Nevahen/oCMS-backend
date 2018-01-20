@@ -18,7 +18,7 @@ router.get('/', (req,res)=>{
 router.get('/:id', (req,res)=>{
     pages.getPageByID(req.params.id)
     .then(page =>{
-        res.send(page);
+        res.json(page);
     }).catch(err =>{
         res.send(err);
     })
