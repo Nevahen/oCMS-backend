@@ -73,7 +73,7 @@ export class Pages{
                     console.log("error");
                     reject(new ApiError(500,"Someerror",err));
                 }
-                resolve(data);
+                resolve(new ApiResponse(200,"ok!"));
             });
         });
     }

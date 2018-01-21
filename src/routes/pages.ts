@@ -5,7 +5,9 @@ import * as bodyParser from 'body-parser'
 var router = express.Router();
 var pages = new Pages();
 
+router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
+
 
 router.get('/', (req,res)=>{
      pages.getAllPages()
