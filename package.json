@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/server.js",
     "grunt": "grunt",
-    "dev": "nodemon ./dist/server.js"
+    "dev": "nodemon ./dist/server.js",
+    "docs": "typedoc --module commonjs --out ./doc ./src"
   },
   "repository": {
     "type": "git",

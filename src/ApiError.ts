@@ -1,8 +1,5 @@
 export class ApiError{
-
-    public error_code;
-    public message;
-    public additional_info;
+    public error;
 
     /**
      * Creates an instance of ApiError.
@@ -12,11 +9,14 @@ export class ApiError{
      * @memberof ApiError
      */
     constructor(error_code:number, message:string, optional?:object){
-        this.error_code = error_code;
-        this.message    = message;
+       
+       this.error ={
+
+        statuscode: error_code,
+        message: message,        
+    }
         if(optional){
-            this.additional_info = optional;
+            this.error.additional_info = optional;
         }
     }
-
 }
