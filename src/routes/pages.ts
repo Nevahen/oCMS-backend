@@ -30,6 +30,17 @@ router.put('/', (req,res )=>{
    })
 })
 
+router.post('/', (req,res )=>{
+
+    pages.createPage(req.body)
+    .then(page =>{
+       res.json(page);
+   })
+   .catch(err =>{
+       res.send(err);
+   })
+})
+
 
 router.get('/:id', (req,res)=>{
     pages.getPageByID(req.params.id)

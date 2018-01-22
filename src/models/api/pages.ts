@@ -65,17 +65,34 @@ export class Pages{
     updatePage(data:Page){
         return new Promise((resolve,reject)=>{
 
-            let sql = "UPDATE ocms_pages SET content = ?, title = ? where page_id = ?";
+            let sql = "UPDATE ocms_pages SET content = ?, title = ?, lastedit=now() where page_id = ?";
 
             this.db.query(sql,[data.content,data.title,data.page_id],(err,result)=>{
               
                 if(err){
                     console.log("error");
-                    reject(new ApiError(500,"Someerror",err));
+                    reject(new ApiError(500,"Someerror",err.code));
                 }
                 resolve(new ApiResponse(200,"ok!"));
             });
         });
     }
+
+    createPage(data:Page){
+        return new Promise((resolve,reject)=>{
+
+            let sql = "INSERT into ocms_pages SET content = ?, title = ?";
+
+            this.db.query(sql,[data.content,data.title],(err,result)=>{
+              
+                if(err){
+                    console.log(err);
+                    reject(new ApiError(500,"Someerror",err.code));
+                }
+                resolve(new ApiResponse(200,"ok!"));
+            });
+        });
+    }
+
 } 
 
