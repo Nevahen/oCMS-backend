@@ -5,10 +5,11 @@ import { Page } from '../page';
 import { ApiResponse } from '../../ApiResponse';
 import { Utils } from '../../utils/utils';
 import { QueryUtils } from '../../utils/QueryUtils';
+import { resolve } from 'path';
 
 export class Pages{
 
- db;
+ private db;
 
     constructor(){
         this.db = DatabaseConnection.Instance.connection;
@@ -32,7 +33,7 @@ export class Pages{
                 if(!value){
                     resolve(new ApiError(404, "Element not found"));
                 }
-            })
+            });
 
             const sql = 'select * from ocms_pages where page_id = ?'
             this.db.query(sql,[id],(err,results)=>{
@@ -49,15 +50,15 @@ export class Pages{
      */
     getAllPages(){
 
-    return new Promise((resolve,reject)=>{
-        this.db.query('select * from ocms_pages',(err,results)=>{
-            if(err){
+        return new Promise((resolve,reject)=>{
+            const sql = "select * from ocms_pages";
+            QueryUtils.Query(sql)
+            .catch((err)=>{
                 reject(err);
-            }
-            resolve(results);
-        });
-    }) 
-};
+            })
+        }) 
+    };
+
     /**
      * Method for PUT request /api/pages
      * 
@@ -70,15 +71,20 @@ export class Pages{
         return new Promise((resolve,reject)=>{
 
             let sql = "UPDATE ocms_pages SET content = ?, title = ?, lastedit=now() where page_id = ?";
-
-            this.db.query(sql,[data.content,data.title,data.page_id],(err,result)=>{
-              
-                if(err){
-                    console.log("error");
-                    reject(new ApiError(500,"Someerror",err.code));
-                }
-                resolve(new ApiResponse(200,"ok!"));
-            });
+            QueryUtils.PageExists(data.page_id)
+            .then(()=>{
+            return QueryUtils.Query(sql,
+                [
+                    data.content,
+                    data.title,data.page_id
+                ])
+            })
+            .then(()=>{
+                resolve(new ApiResponse(400,"All good!"));
+            })
+            .catch((err)=>{
+                reject(new ApiError(500,err));
+            })
         });
     }
 
@@ -87,41 +93,36 @@ export class Pages{
 
             let sql = "INSERT into ocms_pages SET content = ?, title = ?";
 
-            this.db.query(sql,[data.content,data.title],(err,result)=>{
-              
-                if(err){
-                    console.log(err);
-                    reject(new ApiError(500,"Someerror",err.code));
-                }
-                resolve(new ApiResponse(200,"ok!"));
-            });
+            QueryUtils.Query(sql,
+                [
+                    data.content,
+                    data.title
+                ])                
+            .then(()=>{
+                resolve(new ApiResponse(400,"All good!"));
+            })
+            .catch(()=>{
+                reject(new ApiError(500,"Internal Server Error"));
+            })      
         });
     }
     
     deletePage(page_id:number){
+        
+        const sql = "DELETE from ocms_pages WHERE page_id = ?";
+
         return new Promise((resolve,reject)=>{
 
-            if(!Utils.isInt(page_id)){
-                reject(new ApiError(100, "Invalid DELETE request"));
-            }
-
             QueryUtils.PageExists(page_id)
-            .then((value)=>{
-                if(!value){
-                    resolve(new ApiError(404, "Element not found"));
-                }
+            .then(()=>{
+                return QueryUtils.Query(sql)
             })
-
-            let sql = "DELETE from ocms_pages where page_id = ?";
-            this.db.query(sql,[page_id],(err,result)=>{
-                if(err){
-                    console.log(err);
-                    reject(new ApiError(500,"Someerror",err.code));
-                }
-                resolve(new ApiResponse(200,"ok!"));
-            });
-        });
+            .then(()=>{
+                resolve(new ApiResponse(400, "All good!"));
+            })
+            .catch((err)=>{
+                reject(new ApiError(500,err));
+            })
+        });        
     }
-
-} 
-
+}
