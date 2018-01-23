@@ -41,6 +41,16 @@ router.post('/', (req,res )=>{
    })
 })
 
+router.delete('/:id', (req,res )=>{
+
+    pages.deletePage(req.params.id)
+    .then(page =>{
+       res.json(page);
+   })
+   .catch(err =>{
+       res.send(err);
+   })
+})
 
 router.get('/:id', (req,res)=>{
     pages.getPageByID(req.params.id)

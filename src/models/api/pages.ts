@@ -3,10 +3,12 @@ import { DatabaseConnection } from '../../db';
 import {ApiError} from '../../ApiError';
 import { Page } from '../page';
 import { ApiResponse } from '../../ApiResponse';
+import { Utils } from '../../utils/utils';
+import { QueryUtils } from '../../utils/QueryUtils';
 
 export class Pages{
 
-    private db;
+ db;
 
     constructor(){
         this.db = DatabaseConnection.Instance.connection;
@@ -21,19 +23,21 @@ export class Pages{
 
         return new Promise((resolve,reject)=>{
 
-            if(isNaN(id) || !(id % 1 == 0)){
-                reject(new ApiError(400,"Bad request"));
+            if(!Utils.isInt(id)){
+                reject(new ApiError(100, "Invalid DELETE request"));
             }
-            
+
+            QueryUtils.PageExists(id)
+            .then((value)=>{
+                if(!value){
+                    resolve(new ApiError(404, "Element not found"));
+                }
+            })
+
             const sql = 'select * from ocms_pages where page_id = ?'
             this.db.query(sql,[id],(err,results)=>{
                 if(err){
                     reject(new ApiError(500,"Internal Api Error"));
-                }
-                if(results.length == 0){
-                    resolve(new ApiError(404,"Element not Found!",{
-                        Request: id
-                    }));
                 }
                 resolve(results);
             });
@@ -85,6 +89,31 @@ export class Pages{
 
             this.db.query(sql,[data.content,data.title],(err,result)=>{
               
+                if(err){
+                    console.log(err);
+                    reject(new ApiError(500,"Someerror",err.code));
+                }
+                resolve(new ApiResponse(200,"ok!"));
+            });
+        });
+    }
+    
+    deletePage(page_id:number){
+        return new Promise((resolve,reject)=>{
+
+            if(!Utils.isInt(page_id)){
+                reject(new ApiError(100, "Invalid DELETE request"));
+            }
+
+            QueryUtils.PageExists(page_id)
+            .then((value)=>{
+                if(!value){
+                    resolve(new ApiError(404, "Element not found"));
+                }
+            })
+
+            let sql = "DELETE from ocms_pages where page_id = ?";
+            this.db.query(sql,[page_id],(err,result)=>{
                 if(err){
                     console.log(err);
                     reject(new ApiError(500,"Someerror",err.code));
