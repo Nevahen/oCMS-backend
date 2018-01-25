@@ -52,7 +52,10 @@ export class Pages{
 
         return new Promise((resolve,reject)=>{
             const sql = "select * from ocms_pages";
-            QueryUtils.Query(sql)
+            QueryUtils.Query(sql).
+            then((pages)=>{
+                resolve(pages);
+            })
             .catch((err)=>{
                 reject(err);
             })
@@ -80,7 +83,7 @@ export class Pages{
                 ])
             })
             .then(()=>{
-                resolve(new ApiResponse(400,"All good!"));
+                resolve(new ApiResponse(200,"All good!"));
             })
             .catch((err)=>{
                 reject(new ApiError(500,err));
@@ -99,7 +102,7 @@ export class Pages{
                     data.title
                 ])                
             .then(()=>{
-                resolve(new ApiResponse(400,"All good!"));
+                resolve(new ApiResponse(200,"All good!"));
             })
             .catch(()=>{
                 reject(new ApiError(500,"Internal Server Error"));
