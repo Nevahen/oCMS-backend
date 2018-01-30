@@ -16,11 +16,11 @@ export class PageValidator implements Validator{
 
         return new Promise((resolve, reject)=>{
 
-            if(page.title.length < this.MIN_TITLE_LENGTH){
+            if(!page.title || page.title.length < this.MIN_TITLE_LENGTH){
                 this.errors.push("Title must be atleast " + this.MIN_TITLE_LENGTH + "characters");
             }
 
-            if(page.content.length == 0){
+            if(!page.content || page.content.length == 0){
                 this.errors.push("Page must have some content!");
             }
 

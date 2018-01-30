@@ -118,7 +118,7 @@ export class Pages{
 
             QueryUtils.PageExists(page_id)
             .then(()=>{
-                return QueryUtils.Query(sql)
+                return QueryUtils.Query(sql,[page_id])
             })
             .then(()=>{
                 resolve(new ApiResponse(400, "All good!"));
