@@ -15,7 +15,7 @@ export class QueryUtils{
                     resolve(true);
                 }
                 else{
-                    reject(false);
+                    resolve(false);
                 }
             });
         })
