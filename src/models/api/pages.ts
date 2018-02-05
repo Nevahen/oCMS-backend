@@ -22,6 +22,8 @@ export class Pages{
      */
     getPageByID(id){
 
+        let pagedata;
+
         return new Promise((resolve,reject)=>{
 
             if(!Utils.isInt(id)){
@@ -35,15 +37,34 @@ export class Pages{
                 }
             });
 
-            const sql = 'select * from ocms_pages where page_id = ?'
-            this.db.query(sql,[id],(err,results)=>{
-                if(err){
-                    reject(new ApiError(500,"Internal Api Error"));
+            const sql = 'select * from ocms_pages where page_id = ?';
+            QueryUtils.Query(sql,[id])
+            .then((results) => {
+                // Need to refer pagedata as pagedata[0] later if we want modify
+                // it, because webclient currently expects array response.
+                pagedata = results;
+            })
+            .then(() =>{
+
+                // If there is no tags init empty array;
+
+                if(!pagedata[0].tags){
+                    pagedata[0].tags = [];
                 }
-                resolve(results);
-            });
-        }) 
-    };
+
+                this.getPageTags(id)
+                .then(v =>{                   
+                    for(let tag of v){
+                        pagedata[0].tags.push(tag.tag_name);   
+                    }
+                    resolve(pagedata)
+                })
+
+
+            })
+           
+        })
+}
 
     /**
      * Returns all pages
@@ -127,5 +148,14 @@ export class Pages{
                 reject(new ApiError(500,err));
             })
         });        
+    }
+
+    getPageTags(page_id:number){
+
+        const sql = `select tag_name from ocms_tags
+        INNER JOIN ocms_page_tags on ocms_page_tags.tag_id = ocms_tags.tag_id
+        WHERE ocms_page_tags.page_id = ?`;
+
+        return QueryUtils.Query(sql, [page_id])
     }
 }
