@@ -23,46 +23,31 @@ export class Pages{
     getPageByID(id){
 
         let pagedata;
+        const sql = 'select * from ocms_pages where page_id = ?';
 
         return new Promise((resolve,reject)=>{
 
-            if(!Utils.isInt(id)){
-                reject(new ApiError(100, "Invalid DELETE request"));
-            }
-
-            QueryUtils.PageExists(id)
-            .then((value)=>{
-                if(!value){
-                    resolve(new ApiError(404, "Element not found"));
-                }
-            });
-
-            const sql = 'select * from ocms_pages where page_id = ?';
-            QueryUtils.Query(sql,[id])
-            .then((results) => {
-                // Need to refer pagedata as pagedata[0] later if we want modify
-                // it, because webclient currently expects array response.
-                pagedata = results;
+            Utils.isInt(id)
+            .then(() => { return QueryUtils.PageExists(id)
             })
-            .then(() =>{
-
+            .then(() => { return QueryUtils.Query(sql,[id])})
+            .then(results =>{
                 // If there is no tags init empty array;
-
-                if(!pagedata[0].tags){
-                    pagedata[0].tags = [];
+                if(!results[0].tags){
+                    results[0].tags = [];
                 }
 
                 this.getPageTags(id)
                 .then(v =>{                   
                     for(let tag of v){
-                        pagedata[0].tags.push(tag.tag_name);   
+                        results[0].tags.push(tag.tag_name);   
                     }
-                    resolve(pagedata)
+                   resolve(results);
                 })
-
-
-            })
-           
+            })   
+            .catch(err =>{
+                reject(err);
+            })        
         })
 }
 

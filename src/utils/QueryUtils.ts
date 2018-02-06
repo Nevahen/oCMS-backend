@@ -1,4 +1,5 @@
 import { DatabaseConnection } from '../db';
+import { ApiError } from '../ApiError';
 
 export class QueryUtils{
 
@@ -15,7 +16,7 @@ export class QueryUtils{
                     resolve(true);
                 }
                 else{
-                    resolve(false);
+                    reject(new ApiError(400, "Element doesn't exist"));
                 }
             });
         })
