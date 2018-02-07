@@ -33,7 +33,8 @@ export class DatabaseConnection{
             host: config['dbhost'],
             user: config['dbuser'],
             password:config['dbpassword'],
-            database:config['database']    
+            database:config['database'],
+            multipleStatements: true
           });
 
           this.connection.connect();

@@ -10,11 +10,11 @@ export class ApiError{
      */
     constructor(error_code:number, message:string, optional?:object){
        
-       this.error ={
+       this.error = {
+            statuscode: error_code,
+            message: message,        
+        }
 
-        statuscode: error_code,
-        message: message,        
-    }
         if(optional){
             this.error.additional_info = optional;
         }

@@ -24,11 +24,14 @@ export class QueryUtils{
 
     public static Query(sql:string, values?:Array<any>):Promise<any>{
 
+
         return new Promise((resolve,reject)=>{
             DatabaseConnection.Instance.connection.query(sql,values,
                 (err,results)=>{
                     if(err){
-                        reject(err)
+                        console.log(err);
+                        console.log(err.sql)
+                        reject(err);
                     }
                     else{
                         resolve(results);
