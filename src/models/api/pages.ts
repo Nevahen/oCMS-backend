@@ -128,12 +128,33 @@ export class Pages {
         return new Promise((resolve, reject) => {
 
             let sql = "INSERT into ocms_pages SET content = ?, title = ?";
+            let insert_id;
 
             QueryUtils.Query(sql,
                 [
                     data.content,
                     data.title
                 ])
+                .then((result) =>{
+
+                    insert_id = result.insertId;
+
+                    if (data.tags && data.tags.length > 0) {
+                        return this.setPageTags(data.tags)
+                    }
+                    return null;
+                })
+                .then((tag_ids) => {
+                    if (tag_ids) {
+                        let array = [];
+                        for (let i = 0; i < tag_ids[1].length; i++) {
+                            array.push(tag_ids[1][i].tag_id);
+                        }
+
+                        return this.setTagRelations(insert_id, array);
+                    }
+                        return null;
+                })
                 .then(() => {
                     resolve(new ApiResponse(200, "All good!"));
                 })
@@ -180,7 +201,7 @@ export class Pages {
             escaped += `(${page_id}, ` + DatabaseConnection.Instance.connection.escape(tags[i]) + "),";
         }
         escaped = escaped.slice(0, -1);
-        
+
         const sql = `
         INSERT IGNORE into ocms_page_tags (page_id, tag_id)
          values  ${escaped}; DELETE from ocms_page_tags
