@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as pagesRoute from './pages';
+import * as tagsRoute from './tags';
 
 var router = express.Router();
 
@@ -9,7 +10,7 @@ var router = express.Router();
     })
 
     router.use('/pages', pagesRoute);       
-
+    router.use('/tags', tagsRoute);
 
 
 export = router;

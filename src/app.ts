@@ -1,6 +1,5 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import * as pagesRoute from './routes/pages';
 import * as apiIndexRoute from './routes/index';
 
 class App{
