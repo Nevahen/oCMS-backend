@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as pagesRoute from './pages';
 import * as tagsRoute from './tags';
+import * as settingsRoute from './settings';
 
 var router = express.Router();
 
@@ -11,6 +12,7 @@ var router = express.Router();
 
     router.use('/pages', pagesRoute);       
     router.use('/tags', tagsRoute);
+    router.use('/settings', settingsRoute);
 
 
 export = router;
