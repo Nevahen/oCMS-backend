@@ -83,13 +83,11 @@ export class Pages {
 
             let sql = "UPDATE ocms_pages SET content = ?, title = ?, lastedit=now() where page_id = ?";
             QueryUtils.PageExists(data.page_id)
-                .then(() => {
-                    return QueryUtils.Query(sql,
-                        [
-                            data.content,
-                            data.title, data.page_id
-                        ])
-                })
+                .then(() => QueryUtils.Query(sql,[
+                    data.content,
+                    data.title,
+                    data.page_id
+                ]))
                 .then(() => {
                     if (data.tags && data.tags.length > 0) {
                         return this.setPageTags(data.tags)
@@ -132,7 +130,7 @@ export class Pages {
                     data.content,
                     data.title
                 ])
-                .then((result) =>{
+                .then((result) => {
 
                     insert_id = result.insertId;
 
@@ -218,7 +216,7 @@ export class Pages {
         escaped = escaped.slice(0, -1);
         //
 
-        const sql = "INSERT IGNORE into ocms_tags (tag_name) values " + escaped + "; select tag_id from ocms_tags where tag_name in (?);";
+        const sql = `INSERT IGNORE into ocms_tags (tag_name) values ${escaped} ; select tag_id from ocms_tags where tag_name in (?);`;
 
         return QueryUtils.Query(sql, [tags]);
     }
