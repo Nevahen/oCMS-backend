@@ -19,4 +19,8 @@ export class ApiError{
             this.error.additional_info = optional;
         }
     }
+
+    get code(){
+        return this.error.statuscode;
+    }
 }

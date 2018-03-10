@@ -32,25 +32,19 @@ export class Pages {
              * Catch errors and return them if something fails
              */
             Utils.isInt(id)
-                .then(() => {
-                    return QueryUtils.PageExists(id)
-                })
-                .then(() => { return QueryUtils.Query(sql, [id]) })
+                .then(() => QueryUtils.PageExists(id))
+                .then(() => QueryUtils.Query(sql, [id]))
                 .then(results => {
                     pagedata = results;
                     // Init tag array
                     pagedata[0].tags = [];
 
                 })
-                .then(results => {
-                    return this.getPageTags(id)
-                })
+                .then(() => this.getPageTags(id))
                 .then(tags => {
-
-                    for (let tag of tags) {
+                    tags.forEach(tag => {
                         pagedata[0].tags.push(tag.tag_name);
-                    }
-
+                    })
                     resolve(pagedata);
                 })
                 .catch(err => {
@@ -102,6 +96,7 @@ export class Pages {
                     }
                     return null;
                 })
+                //wtf
                 .then((tag_ids) => {
                     if (tag_ids) {
                         let array = [];

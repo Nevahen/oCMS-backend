@@ -1,6 +1,7 @@
 import * as express from 'express';
 import {Pages} from '../models/api/pages';
 import * as bodyParser from 'body-parser'
+import { ApiError } from '../ApiError';
 
 var router = express.Router();
 var pages = new Pages();
@@ -47,8 +48,8 @@ router.delete('/:id', (req,res )=>{
     .then(page =>{
        res.json(page);
    })
-   .catch(err =>{
-       res.send(err);
+   .catch((err:ApiError) =>{
+       res.status(err.code).send(err);
    })
 })
 
