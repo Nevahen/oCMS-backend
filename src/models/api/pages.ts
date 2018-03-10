@@ -96,13 +96,15 @@ export class Pages {
                     }
                     return null;
                 })
-                //wtf
+                //Process tags
                 .then((tag_ids) => {
                     if (tag_ids) {
                         let array = [];
-                        for (let i = 0; i < tag_ids[1].length; i++) {
-                            array.push(tag_ids[1][i].tag_id);
-                        }
+                        /* Index 1 because promise returns multi query response
+                        / and 1 contains tags */
+                        tag_ids[1].forEach(element => {
+                            array.push(element.tag_id);
+                        });
 
                         return this.setTagRelations(data.page_id, array);
                     }
@@ -142,9 +144,10 @@ export class Pages {
                 .then((tag_ids) => {
                     if (tag_ids) {
                         let array = [];
-                        for (let i = 0; i < tag_ids[1].length; i++) {
-                            array.push(tag_ids[1][i].tag_id);
-                        }
+
+                        tag_ids[1].forEach(element => {
+                            array.push(element.tag_id);
+                        });
 
                         return this.setTagRelations(insert_id, array);
                     }
@@ -166,15 +169,10 @@ export class Pages {
         return new Promise((resolve, reject) => {
 
             QueryUtils.PageExists(page_id)
-                .then(() => {
-                    return QueryUtils.Query(sql, [page_id])
-                })
-                .then(() => {
-                    resolve(new ApiResponse(400, "All good!"));
-                })
-                .catch((err) => {
-                    reject(new ApiError(500, err));
-                })
+                .then(()     => QueryUtils.Query(sql, [page_id]))
+                .then(()     => resolve(new ApiResponse(400, "All good!")))
+                .catch((err) => reject(new ApiError(500, err))
+                )
         });
     }
 
