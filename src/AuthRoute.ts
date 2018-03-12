@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { QueryUtils } from "./utils/QueryUtils";
 import { ApiError, ErrorCode } from "./ApiError";
-
+var jwt = require('jsonwebtoken');
 var bodyParser = require('body-parser');
 var router = Router();
 
@@ -11,9 +11,23 @@ router.use(bodyParser.urlencoded({extended:true}));
 router.post('/', (req, res) => {
     console.log(req.body.username);
     getUser(req.body.username)
-    .then(response => validatePassword(req.body.password, response["password"]))
-    .then(() =>{ res.send("thanks for logging in :)")})
+    .then(user => validatePassword(req.body.password, user))
+    .then(user => {
+    
+    let payload:any = {
+        username: user["username"],
+        email: user["email"],
+        role: user["role"]
+    }
+    
+    let token = jwt.sign(payload,"secret");
+    return token;
+    })
+    .then(token =>{
+        res.send(token);
+    })
     .catch(err =>{
+        console.log(err);
         let error = <ApiError>err;
         res.status(error.code).send(error);
     })
@@ -33,14 +47,14 @@ function getUser(username:string){
     })
 }
 
-function validatePassword(input, target){
+function validatePassword(input, user){
     return new Promise((resolve, reject) => {
 
         // hashing not implemented yet -- bcrypt given password with salt and secrets and compare
-        let isRightPassword = input === target;
+        let isRightPassword = input === user.password;
 
         if(isRightPassword){
-            resolve()
+            resolve(user)
         }
         else{
             reject(new ApiError(ErrorCode.UNAUTHORIZED,"Wrong Password!"));
