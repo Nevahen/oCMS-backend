@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { QueryUtils } from "./utils/QueryUtils";
 import { ApiError, ErrorCode } from "./ApiError";
-var jwt = require('jsonwebtoken');
+import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
+
 var bodyParser = require('body-parser');
 var router = Router();
 
@@ -9,22 +11,16 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
 
 router.post('/', (req, res) => {
-    console.log(req.body.username);
+
     getUser(req.body.username)
     .then(user => validatePassword(req.body.password, user))
-    .then(user => {
-    
-    let payload:any = {
-        username: user["username"],
-        email: user["email"],
-        role: user["role"]
-    }
-    
-    let token = jwt.sign(payload,"secret");
-    return token;
-    })
-    .then(token =>{
-        res.send(token);
+    .then(user => createToken(user))
+    .then(token => {
+        let payload = {
+            token:token,
+            message:"Token created"
+        }
+        res.json(payload);
     })
     .catch(err =>{
         console.log(err);
@@ -35,10 +31,10 @@ router.post('/', (req, res) => {
 
 function getUser(username:string){
     const sql = "SELECT * from ocms_users where username = ?";
-    return new Promise((resolve, reject) =>{QueryUtils.Query(sql, [username])
+    return new Promise((resolve, reject) => {QueryUtils.Query(sql, [username])
         .then(results => {
             if(results.length === 0){
-                reject (new ApiError(ErrorCode.NOT_FOUND, "Not found"))
+                reject (new ApiError(ErrorCode.UNAUTHORIZED, "Wrong username or password"))
             }
             else {
                 resolve(results[0]);
@@ -47,18 +43,37 @@ function getUser(username:string){
     })
 }
 
-function validatePassword(input, user){
+async function createToken(user){
+
+        let payload:any = {
+            username: user["username"],
+            email: user["email"],
+            role: user["role"],
+            exp: Math.floor((Date.now() + (3600 * 1000)) / 1000)
+        }
+        
+        let token = jwt.sign(payload,"secret");
+        return await token;
+}
+
+/**
+ * 
+ * @param {any} input = Plaintext password entered by user
+ * @param {any} user  = user data fetched from db
+ * @returns 
+ */
+function validatePassword(input, user) {
     return new Promise((resolve, reject) => {
 
-        // hashing not implemented yet -- bcrypt given password with salt and secrets and compare
-        let isRightPassword = input === user.password;
-
-        if(isRightPassword){
-            resolve(user)
-        }
-        else{
-            reject(new ApiError(ErrorCode.UNAUTHORIZED,"Wrong Password!"));
-        }
+        bcrypt.compare(input,user.password)
+        .then(isRightPassword => {
+            if(isRightPassword) {
+                resolve(user)
+            }
+            else {
+                reject(new ApiError(ErrorCode.UNAUTHORIZED,"Wrong username or password"));
+            }
+        })     
     }) 
 }
 
