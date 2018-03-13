@@ -1,6 +1,8 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as apiIndexRoute from './routes/index';
+import * as requireAuth from './lib/requireauth-middleware'
+
 
 class App{
 
@@ -8,8 +10,13 @@ class App{
 
     constructor(){
         this.express = express();
+        this.initSettings();
         this.middleware();
         this.routes();
+    }
+
+    private initSettings(){
+        requireAuth.setOptions({secretKey:process.env.SECRET_KEY});
     }
 
     // App wide middleware here

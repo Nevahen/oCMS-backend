@@ -1,8 +1,6 @@
+require('dotenv').config()
 import app from './app';
 import * as http from 'http';
-
-
-var config = require('../ocms_config.js');
 
 const port = 80;
 

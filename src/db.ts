@@ -1,7 +1,5 @@
 import * as mysql from 'mysql';
 import { Connection } from 'mysql';
-var config = require('../ocms_config.js');
-
 
 /**
  * TODO: Pools
@@ -30,10 +28,10 @@ export class DatabaseConnection{
     private constructor()
     {
        this.connection =  mysql.createConnection({
-            host: config['dbhost'],
-            user: config['dbuser'],
-            password:config['dbpassword'],
-            database:config['database'],
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_DATABASE,
             multipleStatements: true
           });
 

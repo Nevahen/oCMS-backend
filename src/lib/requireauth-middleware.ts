@@ -1,6 +1,8 @@
 import * as jwt from 'jsonwebtoken';
 
-export function requireAuth(req, res, next) {
+var _options = {secretKey: null};
+
+export function middleware(req, res, next) {
 
     if (!req.headers.authorization) {
         res.status(400).send("No token provided");
@@ -11,7 +13,7 @@ export function requireAuth(req, res, next) {
         token = token[1];
         console.log(token);
 
-        jwt.verify(token, "secret", (err, decoded) => {
+        jwt.verify(token, _options.secretKey, (err, decoded) => {
             if (err) {
                 let message = { error: err.message }
                 res.status(401).json(message);
@@ -21,4 +23,8 @@ export function requireAuth(req, res, next) {
             }
         })
     }
+}
+
+export function setOptions(options:object){
+    Object.assign(_options, options);
 }

@@ -2,7 +2,7 @@ import * as express from 'express';
 import {Pages} from '../models/api/pages';
 import * as bodyParser from 'body-parser'
 import { ApiError } from '../ApiError';
-import { requireAuth } from '../lib/requireauth-middleware';
+import * as requireAuth from '../lib/requireauth-middleware';
 
 var router = express.Router();
 var pages = new Pages();
@@ -11,7 +11,7 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
 
 
-router.get('/', requireAuth, (req, res) => {
+router.get('/', requireAuth.middleware, (req, res) => {
      pages.getAllPages()
     .then(page => {
         res.send(page);
@@ -21,7 +21,7 @@ router.get('/', requireAuth, (req, res) => {
     })
 })
 
-router.put('/', (req, res) => {
+router.put('/', requireAuth.middleware, (req, res) => {
 
     pages.updatePage(req.body)
     .then(page => {
@@ -32,7 +32,7 @@ router.put('/', (req, res) => {
    })
 })
 
-router.post('/', (req, res) => {
+router.post('/', requireAuth.middleware, (req, res) => {
 
     pages.createPage(req.body)
     .then(page => {
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
    })
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', requireAuth.middleware, (req, res) => {
 
     pages.deletePage(req.params.id)
     .then(page => {
