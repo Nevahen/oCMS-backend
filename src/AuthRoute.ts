@@ -52,8 +52,8 @@ async function createToken(user){
             exp: Math.floor((Date.now() + (3600 * 1000)) / 1000)
         }
         
-        let token = jwt.sign(payload,"secret");
-        return await token;
+        let token = await jwt.sign(payload,"secret");
+        return token;
 }
 
 /**

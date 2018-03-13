@@ -2,6 +2,7 @@ import * as express from 'express';
 import {Pages} from '../models/api/pages';
 import * as bodyParser from 'body-parser'
 import { ApiError } from '../ApiError';
+import { requireAuth } from '../lib/requireauth-middleware';
 
 var router = express.Router();
 var pages = new Pages();
@@ -10,7 +11,7 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended:true}));
 
 
-router.get('/', (req, res) => {
+router.get('/', requireAuth, (req, res) => {
      pages.getAllPages()
     .then(page => {
         res.send(page);
