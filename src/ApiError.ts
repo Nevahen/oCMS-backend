@@ -1,6 +1,5 @@
 export class ApiError{
     public error;
-    public
 
     /**
      * Creates an instance of ApiError.
