@@ -37,4 +37,13 @@ export class QueryUtils {
                 })
         })
     }
+
+    public static escapeValues(values){
+        let escaped = "";
+        values.forEach(value => {
+            escaped += `(${DatabaseConnection.Instance.connection.escape(value)}),`;
+        })
+        return escaped = escaped.slice(0, -1);
+        //
+    }
 }

@@ -20,7 +20,10 @@ class App{
     }
 
     // App wide middleware here
-    private middleware(){};
+    private middleware(){
+        this.express.use(bodyParser.urlencoded({extended:true}));
+        this.express.use(bodyParser.json());
+    };
 
     private routes(){
         let router = express.Router();

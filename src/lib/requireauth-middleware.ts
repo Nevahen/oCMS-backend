@@ -1,4 +1,6 @@
 import * as jwt from 'jsonwebtoken';
+import { HTTPCodes } from '../enums/httpcodes';
+import { ApiError } from '../ApiError';
 
 var _options = _defaults;
 
@@ -8,9 +10,9 @@ var _defaults = {
 }
 
 export function middleware(req, res, next) {
-
     if (!req.headers.authorization) {
-        res.status(400).send(_options.noToken);
+        const error = new ApiError(HTTPCodes.BAD_REQUEST,_options.noToken)
+        res.status(error.code).send(error);
     }
     else {
         // (0)Bearer (1)TokenString
@@ -30,6 +32,6 @@ export function middleware(req, res, next) {
     }
 }
 
-export function setOptions(options:object){
-    _options = Object.assign({}, _options, options);
+export function setOptions(options){
+    _options = Object.assign({}, _defaults, options);
 }

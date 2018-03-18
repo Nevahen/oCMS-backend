@@ -13,10 +13,9 @@ export class PageValidator implements Validator{
     errors = [];
 
     validate(page:Page):Promise<any>{
-        console.log(page.title)
         return new Promise((resolve, reject)=>{
 
-            if(!page.title || page.title.length < this.MIN_TITLE_LENGTH){
+            if(!page.title || page.title.toString().length < this.MIN_TITLE_LENGTH){
                 this.errors.push("Title must be atleast " + this.MIN_TITLE_LENGTH + "characters");
             }
 
