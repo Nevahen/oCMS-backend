@@ -6,6 +6,7 @@ import { ApiResponse } from '../../ApiResponse';
 import { Utils } from '../../utils/utils';
 import { QueryUtils } from '../../utils/QueryUtils';
 import { resolve } from 'path';
+import { PageValidator } from '../../_shared/pagevalidator';
 
 export class Pages {
 
@@ -121,15 +122,14 @@ export class Pages {
 
     createPage(data: Page) {
         return new Promise((resolve, reject) => {
-
-            let sql = "INSERT into ocms_pages SET content = ?, title = ?";
+            let validator = new PageValidator();
+            const sql = "INSERT into ocms_pages SET content = ?, title = ?";
             let insert_id;
-
-            QueryUtils.Query(sql,
-                [
-                    data.content,
-                    data.title
-                ])
+            console.log(data);
+            validator.validate(data)
+              .then(() =>
+              QueryUtils.Query(sql,[data.content,data.title])
+                )
                 .then((result) => {
 
                     insert_id = result.insertId;
@@ -154,8 +154,8 @@ export class Pages {
                 .then(() => {
                     resolve(new ApiResponse(200, "All good!"));
                 })
-                .catch(() => {
-                    reject(new ApiError(500, "Internal Server Error"));
+                .catch((err) => {
+                    reject(new ApiError(500, "Internal Server Error", err));
                 })
         });
     }

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { QueryUtils } from "./utils/QueryUtils";
-import { ApiError, ErrorCode } from "./ApiError";
+import { ApiError } from "./ApiError";
+import { HTTPCodes } from "./enums/httpcodes";
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 
@@ -34,7 +35,7 @@ function getUser(username:string){
     return new Promise((resolve, reject) => {QueryUtils.Query(sql, [username])
         .then(results => {
             if(results.length === 0){
-                reject (new ApiError(ErrorCode.UNAUTHORIZED, "Wrong username or password"))
+                reject (new ApiError(HTTPCodes.UNAUTHORIZED, "Wrong username or password"))
             }
             else {
                 resolve(results[0]);
@@ -71,7 +72,7 @@ function validatePassword(input, user) {
                 resolve(user)
             }
             else {
-                reject(new ApiError(ErrorCode.UNAUTHORIZED,"Wrong username or password"));
+                reject(new ApiError(HTTPCodes.UNAUTHORIZED,"Wrong username or password"));
             }
         })     
     }) 

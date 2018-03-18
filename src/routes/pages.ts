@@ -3,12 +3,13 @@ import {Pages} from '../models/api/pages';
 import * as bodyParser from 'body-parser'
 import { ApiError } from '../ApiError';
 import * as requireAuth from '../lib/requireauth-middleware';
+import { Page } from '../models/page';
 
 var router = express.Router();
 var pages = new Pages();
 
+router.use(bodyParser.urlencoded({extended:false}));
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extended:true}));
 
 
 router.get('/', requireAuth.middleware, (req, res) => {
@@ -22,8 +23,8 @@ router.get('/', requireAuth.middleware, (req, res) => {
 })
 
 router.put('/', requireAuth.middleware, (req, res) => {
-
-    pages.updatePage(req.body)
+    let data:Page = JSON.parse(req.body.data)
+    pages.updatePage(data)
     .then(page => {
        res.json(page);
    })
@@ -33,8 +34,9 @@ router.put('/', requireAuth.middleware, (req, res) => {
 })
 
 router.post('/', requireAuth.middleware, (req, res) => {
-
-    pages.createPage(req.body)
+    console.log(req.body.data)
+    let data:Page = JSON.parse(req.body.data)
+    pages.createPage(data)
     .then(page => {
        res.json(page);
    })

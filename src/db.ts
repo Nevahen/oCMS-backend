@@ -35,9 +35,44 @@ export class DatabaseConnection{
             multipleStatements: true
           });
 
-          this.connection.connect();
+         this.setupHandles(this.connection)
+         this._connect();
     }
 
+    private _connect(){
+
+           // No promises..
+           this.connection.connect((err) =>{
+               if(err){
+                   console.log(err.code);
+                   console.log("Trying to connect to database again soon..")
+                   setTimeout(() =>{
+                    this.connection = mysql.createConnection(this.connection.config);
+                    this._connect()
+                   }, 2000)
+               }
+               else{
+                   this.setupHandles(this.connection)
+                   console.log("Connected to database @ " + this.connection.config.host)
+               }
+           })
+    }
+
+    private setupHandles(connection){
+        connection.on("disconnect", this.handleDisconnect)
+        connection.on("error", this.handleErrors)
+    }
+
+    private handleErrors = (error) =>{
+        if(error.fatal){
+            this._connect();
+        }
+    }
+
+    private handleDisconnect = () =>{
+        console.log("Disconnected from database")
+        this._connect();
+    }
     /**
      * Returns Singleton Instance of DatabaseConnection
      */
