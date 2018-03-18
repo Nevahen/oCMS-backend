@@ -53,7 +53,7 @@ async function createToken(user){
             exp: Math.floor((Date.now() + (3600 * 1000)) / 1000)
         }
         
-        let token = await jwt.sign(payload,"secret");
+        let token = await jwt.sign(payload, process.env.SECRET_KEY);
         return token;
 }
 
