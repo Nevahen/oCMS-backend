@@ -66,14 +66,6 @@ export class Pages {
      
     };
 
-    /**
-     * Method for PUT request /api/pages
-     * 
-     * 
-     * @param {Page} data requests body 
-     * @returns ApiError or ApiResponse
-     * @memberof Pages
-     */
     updatePage(data: Page) {
         return new Promise((resolve, reject) => {
 
@@ -117,12 +109,12 @@ export class Pages {
 
     createPage = (req,res) => {
         let data = req.body
-        let validator = new PageValidator();
-        const sql = "INSERT into ocms_pages SET content = ?, title = ?";
         let insert_id;
 
+        let validator = new PageValidator();
         validator.validate(data)
-            .then(() => QueryUtils.Query(sql,[data.content,data.title]))
+            .then(() => { return new Page(data)})
+            .then((page) => QueryUtils.Query(page.generateInsertQuery()))
             .then((result) => {
 
                 insert_id = result.insertId;
@@ -133,6 +125,7 @@ export class Pages {
                 return null;
             })
             .then((tag_ids) => {
+
                 if (tag_ids) {
                     let array = [];
 
@@ -142,7 +135,8 @@ export class Pages {
 
                     return this.setTagRelations(insert_id, array);
                 }
-                    return null;
+
+                return null;
             })
             .then(() => {
                 res.status(200).json(new ApiResponse(200,"Page created!"))
@@ -154,19 +148,17 @@ export class Pages {
     }
     
 
-    deletePage(page_id: number) {
+    deletePage(req,res) {
+
+        const page_id = req.params.id
 
         const sql = "DELETE from ocms_pages WHERE page_id = ?";
 
-        return new Promise((resolve, reject) => {
-
-            QueryUtils.PageExists(page_id)
-                .then(()     => QueryUtils.Query(sql, [page_id]))
-                .then(()     => resolve(new ApiResponse(400, "All good!")))
-                .catch((err) => reject(new ApiError(500, err))
-                )
-        });
-    }
+        QueryUtils.PageExists(page_id)
+            .then(()     => QueryUtils.Query(sql, [page_id]))
+            .then(()     => res.send(new ApiResponse(400, "All good!")))
+            .catch((err) => res.status(HTTPCodes.INTERNAL_ERROR).send(new ApiError(500, err)))
+        }
 
     getPageTags(page_id: number) {
 

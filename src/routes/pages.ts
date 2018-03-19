@@ -8,7 +8,7 @@ import { Page } from '../models/page';
 var router = express.Router();
 var pages = new Pages();
 
-router.get('/', pages.getAllPages)
+router.get('/', requireAuth.middleware, pages.getAllPages)
 
 router.put('/', requireAuth.middleware, (req, res) => {
     let data:Page = JSON.parse(req.body.data)
@@ -21,18 +21,9 @@ router.put('/', requireAuth.middleware, (req, res) => {
    })
 })
 
-router.post('/', pages.createPage)
+router.post('/', requireAuth.middleware, pages.createPage)
 
-router.delete('/:id', requireAuth.middleware, (req, res) => {
-
-    pages.deletePage(req.params.id)
-    .then(page => {
-       res.json(page);
-   })
-   .catch((err:ApiError) => {
-       res.status(err.code).send(err);
-   })
-})
+router.delete('/:id', requireAuth.middleware, pages.deletePage)
 
 router.get('/:id', pages.getPageByID)
 

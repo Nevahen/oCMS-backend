@@ -46,4 +46,8 @@ export class QueryUtils {
         return escaped = escaped.slice(0, -1);
         //
     }
+
+    public static format(sql, values:Array<any>){
+        return DatabaseConnection.Instance.connection.format(sql,values)
+    }
 }
