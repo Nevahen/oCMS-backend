@@ -67,4 +67,41 @@ export class Page{
         return QueryUtils.format(SQL, [obj]);
 
     }
+
+    generateUpdateQuery(updateData){
+
+        // Let's not do hardwork without an ID
+        if(!this.pagedata.page_id){
+            throw Error("Cannot generate update query if page doesn't have an ID")
+        }
+
+        const sql = "UPDATE ocms_pages SET ? WHERE page_id = ?";
+        const properties = ["title", "content", "author", "status"]
+
+        let updateObject = {}
+
+        properties.forEach(prop =>{
+
+            if(updateData.hasOwnProperty(prop)){
+
+                // Check if current data has this prop 
+                if(this._data.hasOwnProperty(prop)){
+                    if(this._data[prop] !== updateData[prop]){
+                        updateObject[prop] = updateData[prop]
+                    }
+                } else{
+                    updateObject[prop] = updateData[prop];
+                }
+            }
+
+
+        })
+
+        updateObject["lastedit"] = new Date();
+        
+        console.log(QueryUtils.format(sql,[updateObject,this.page_id]))
+
+        console.log(updateObject)
+        return null;
+    }
 }

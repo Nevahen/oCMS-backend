@@ -206,7 +206,7 @@ export class Pages {
 
     }
 
-    setPageTags(tags: Array<string>) {
+    private setPageTags(tags: Array<string>) {
         // Extract this to function..
         let escaped = QueryUtils.escapeValues(tags);
         const sql = `INSERT IGNORE into ocms_tags (tag_name) values ${escaped} ; select tag_id from ocms_tags where tag_name in (?);`;
