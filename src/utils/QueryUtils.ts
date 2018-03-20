@@ -4,7 +4,6 @@ import { ApiError } from '../ApiError';
 export class QueryUtils {
 
     public static async PageExists(id: number) {
-
         return new Promise((resolve, reject) => {
 
             const sql = "SELECT page_id from ocms_pages where page_id = ?";

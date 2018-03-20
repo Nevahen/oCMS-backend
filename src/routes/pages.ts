@@ -9,18 +9,7 @@ var router = express.Router();
 var pages = new Pages();
 
 router.get('/', requireAuth.middleware, pages.getAllPages)
-
-router.put('/', requireAuth.middleware, (req, res) => {
-    let data:Page = JSON.parse(req.body.data)
-    pages.updatePage(data)
-    .then(page => {
-       res.json(page);
-   })
-   .catch(err => {
-       res.send(err);
-   })
-})
-
+router.put('/', requireAuth.middleware, pages.updatePage)
 router.post('/', requireAuth.middleware, pages.createPage)
 
 router.delete('/:id', requireAuth.middleware, pages.deletePage)

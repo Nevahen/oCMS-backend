@@ -1,4 +1,5 @@
 import { QueryUtils } from "../utils/QueryUtils";
+import { ApiResponse } from "../ApiResponse";
 
 export class Page{
 
@@ -97,11 +98,14 @@ export class Page{
 
         })
 
+        if(Object.keys(updateObject).length === 0){
+            throw new ApiResponse(200,"Nothing to update")
+        }
+
         updateObject["lastedit"] = new Date();
         
-        console.log(QueryUtils.format(sql,[updateObject,this.page_id]))
 
         console.log(updateObject)
-        return null;
+        return QueryUtils.format(sql,[updateObject,this.page_id])
     }
 }

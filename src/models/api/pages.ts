@@ -66,45 +66,43 @@ export class Pages {
      
     };
 
-    updatePage(data: Page) {
-        return new Promise((resolve, reject) => {
+    updatePage =(req, res)  => {
+        let data = req.body
+        QueryUtils.PageExists(data.page_id)
+        .then(() => { return this.fetchPage(data.page_id)})
+        .then(page => { return new Page(page[0])})
+        .then(page => {
+            QueryUtils.Query(page.generateUpdateQuery(req.body))
+        })
+        .then(() => {
+            if (data.tags && data.tags.length > 0) {
+                return this.setPageTags(data.tags)
+            }
+            return null;
+        })
+        //Process tags
+        .then((tag_ids) => {
+            if (tag_ids) {
+                let array = [];
+                /* Index 1 because promise returns multi query response
+                / and 1 contains tags */
+                tag_ids[1].forEach(element => {
+                    array.push(element.tag_id);
+                });
 
-            let sql = "UPDATE ocms_pages SET content = ?, title = ?, lastedit=now() where page_id = ?";
-            QueryUtils.PageExists(data.page_id)
-                .then(() => QueryUtils.Query(sql,[
-                    data.content,
-                    data.title,
-                    data.page_id
-                ]))
-                .then(() => {
-                    if (data.tags && data.tags.length > 0) {
-                        return this.setPageTags(data.tags)
-                    }
-                    return null;
-                })
-                //Process tags
-                .then((tag_ids) => {
-                    if (tag_ids) {
-                        let array = [];
-                        /* Index 1 because promise returns multi query response
-                        / and 1 contains tags */
-                        tag_ids[1].forEach(element => {
-                            array.push(element.tag_id);
-                        });
+                return this.setTagRelations(data.page_id, array);
+            }
+            else {
+                return this.removeAllTagRelations(data.page_id);
+            }
+        })
+        .then(() => {
+            res.json(new ApiResponse(200, "All good!"));
+        })
+        .catch((err) => {
+            res.status(err.statuscode).json(err);
+        })
 
-                        return this.setTagRelations(data.page_id, array);
-                    }
-                    else {
-                        return this.removeAllTagRelations(data.page_id);
-                    }
-                })
-                .then(() => {
-                    resolve(new ApiResponse(200, "All good!"));
-                })
-                .catch((err) => {
-                    reject(new ApiError(500, err));
-                })
-        });
     }
 
     createPage = (req,res) => {
@@ -126,14 +124,9 @@ export class Pages {
             })
             .then((tag_ids) => {
 
-                if (tag_ids) {
-                    let array = [];
+                if (tag_ids) {    
 
-                    tag_ids[1].forEach(element => {
-                        array.push(element.tag_id);
-                    });
-
-                    return this.setTagRelations(insert_id, array);
+                    return this.setTagRelations(insert_id, tag_ids[1]);
                 }
 
                 return null;
@@ -168,6 +161,12 @@ export class Pages {
         WHERE ocms_page_tags.page_id = ?`;
 
         return QueryUtils.Query(sql, [page_id])
+    }
+
+    fetchPage(pageid:number){
+        console.log("pageid")
+        const sql = "SELECT * from ocms_pages where page_id = ?"
+        return QueryUtils.Query(sql, [pageid])
     }
 
     setTagRelations(page_id, tags) {
