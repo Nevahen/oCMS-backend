@@ -8,9 +8,6 @@ import * as bcrypt from 'bcrypt';
 var bodyParser = require('body-parser');
 var router = Router();
 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extended:true}));
-
 router.post('/', (req, res) => {
 
     getUser(req.body.username)

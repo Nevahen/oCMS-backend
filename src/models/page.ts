@@ -45,8 +45,13 @@ export class Page{
            this._data = data;
         }
     }
-
-    generateInsertQuery(){
+/**
+ * 
+ * 
+ * @returns escaped insert query based on this page instance
+ * @memberof Page
+ */
+generateInsertQuery(){
 
         const SQL = "INSERT INTO ocms_pages SET ?"
 
@@ -68,8 +73,14 @@ export class Page{
         return QueryUtils.format(SQL, [obj]);
 
     }
-
-    generateUpdateQuery(updateData){
+/**
+ * 
+ * 
+ * @param {any} updateData pagedata which to update this page
+ * @returns {string} escaped query to update this page to target data
+ * @memberof Page
+ */
+generateUpdateQuery(updateData){
 
         // Let's not do hardwork without an ID
         if(!this.pagedata.page_id){

@@ -66,7 +66,7 @@ export class Pages {
      
     };
 
-    updatePage =(req, res)  => {
+    updatePage = (req, res)  => {
         let data = req.body
         QueryUtils.PageExists(data.page_id)
         .then(() => { return this.fetchPage(data.page_id)})
@@ -124,9 +124,15 @@ export class Pages {
             })
             .then((tag_ids) => {
 
-                if (tag_ids) {    
-
-                    return this.setTagRelations(insert_id, tag_ids[1]);
+                if (tag_ids) {
+                    let array = [];
+                    /* Index 1 because promise returns multi query response
+                    / and 1 contains tags */
+                    tag_ids[1].forEach(element => {
+                        array.push(element.tag_id);
+                    });
+    
+                    return this.setTagRelations(data.page_id, array);
                 }
 
                 return null;
@@ -164,7 +170,6 @@ export class Pages {
     }
 
     fetchPage(pageid:number){
-        console.log("pageid")
         const sql = "SELECT * from ocms_pages where page_id = ?"
         return QueryUtils.Query(sql, [pageid])
     }
