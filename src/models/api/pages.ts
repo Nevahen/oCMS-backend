@@ -72,7 +72,11 @@ export class Pages {
         .then(() => { return this.fetchPage(data.page_id)})
         .then(page => { return new Page(page[0])})
         .then(page => {
-            QueryUtils.Query(page.generateUpdateQuery(req.body))
+
+            let query = page.generateUpdateQuery(req.body)
+            if(query !== null){
+                QueryUtils.Query(query)
+            }
         })
         .then(() => {
             if (data.tags && data.tags.length > 0) {

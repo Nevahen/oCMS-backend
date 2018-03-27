@@ -110,7 +110,7 @@ generateUpdateQuery(updateData){
         })
 
         if(Object.keys(updateObject).length === 0){
-            throw new ApiResponse(200,"Nothing to update")
+            return null
         }
 
         updateObject["lastedit"] = new Date();
