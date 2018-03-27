@@ -136,7 +136,7 @@ export class Pages {
                         array.push(element.tag_id);
                     });
     
-                    return this.setTagRelations(data.page_id, array);
+                    return this.setTagRelations(insert_id, array);
                 }
 
                 return null;
