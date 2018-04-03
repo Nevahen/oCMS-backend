@@ -158,6 +158,14 @@ export class Pages {
         const sql = "DELETE from ocms_pages WHERE page_id = ?";
 
         QueryUtils.PageExists(page_id)
+            .then(() => 
+                QueryUtils.Query('SELECT * from ocms_settings where setting_key = ?',["mainpage"]))
+            .then(row =>{
+                // Don't delete page which is currently set as main
+                if(row[0].setting_value === page_id){
+                    return Promise.reject("Can't delete current mainpage")
+                }
+            })
             .then(()     => QueryUtils.Query(sql, [page_id]))
             .then(()     => res.send(new ApiResponse(400, "All good!")))
             .catch((err) => res.status(HTTPCodes.INTERNAL_ERROR).send(new ApiError(500, err)))
