@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as apiIndexRoute from './routes/index';
 import * as requireAuth from './lib/requireauth-middleware'
-
+import * as path from 'path'
 
 class App{
 
@@ -13,6 +13,7 @@ class App{
         this.initSettings();
         this.middleware();
         this.routes();
+        
     }
 
     private initSettings(){
@@ -23,15 +24,17 @@ class App{
     private middleware(){
         this.express.use(bodyParser.urlencoded({extended:true}));
         this.express.use(bodyParser.json());
+        this.express.use(express.static('dist/build'))
     };
-
     private routes(){
         let router = express.Router();
         
-        this.express.get('/', (req , res)=>{
-            res.send("TODO - direct public")
-        });
+
+   
         this.express.use('/api', apiIndexRoute);
+        this.express.get('/*', (req, res) => { 
+            res.sendFile(path.join(__dirname+'/build/index.html'))
+        })
     };   
 }
 

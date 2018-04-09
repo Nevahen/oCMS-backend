@@ -24,7 +24,7 @@ export class Settings {
 
             QueryUtils.Query(sql, [key, value])
                 .then(v => {
-                    resolve(new ApiResponse(4, "Updated succesfully!"))
+                    resolve(new ApiResponse(200, "Updated succesfully!"))
                 })
                 .catch(error => {
                     reject("Sumthing bad happened");

@@ -1,9 +1,10 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser'
 import { Settings } from '../models/api/settings';
-
+import * as requireAuth from '../lib/requireauth-middleware'
 var router = express.Router();
 var settings = new Settings();
+
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -13,7 +14,7 @@ router.get('/', (req, res) => {
     res.send("Settings");
 })
 
-router.put('/', (req, res) => {
+router.put('/', requireAuth.middleware, (req, res) => {
 
     // Check body for required elements, maybe extract this to general function
     if (!req.body.setting_value || !req.body.setting_key) {

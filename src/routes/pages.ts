@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {Pages} from '../models/api/pages';
+import {Pages} from '../models/api/pages-c';
 import * as bodyParser from 'body-parser'
 import { ApiError } from '../ApiError';
 import * as requireAuth from '../lib/requireauth-middleware';
