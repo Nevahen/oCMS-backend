@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser'
 import { Settings } from '../models/api/settings';
 import * as requireAuth from '../lib/requireauth-middleware'
+import { HTTPCodes } from '../enums/httpcodes';
 var router = express.Router();
 var settings = new Settings();
 
@@ -18,7 +19,7 @@ router.put('/', requireAuth.middleware, (req, res) => {
 
     // Check body for required elements, maybe extract this to general function
     if (!req.body.setting_value || !req.body.setting_key) {
-        res.send({ error: "Need setting_key and setting_value" });
+        res.status(HTTPCodes.BAD_REQUEST).send({ error: "Need setting_key and setting_value" });
         res.end();
         return
     }
@@ -31,6 +32,8 @@ router.put('/', requireAuth.middleware, (req, res) => {
             res.send(err)
         })
 })
+
+router.get('/keys/', settings.getMultipleSettings)
 
 router.get('/key/:key', (req, res) => {
 

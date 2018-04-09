@@ -11,13 +11,6 @@ import { HTTPCodes } from '../../enums/httpcodes';
 
 export class Pages {
 
-    private db;
-
-    constructor() {
-        this.db = DatabaseConnection.Instance.connection;
-    }
-
-
     getPageByID = (req,res) => {
         var pageID = req.params.id
         var pagedata;

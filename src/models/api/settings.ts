@@ -2,13 +2,9 @@ import { DatabaseConnection } from "../../db";
 import { ApiError } from "../../ApiError";
 import { QueryUtils } from "../../utils/QueryUtils";
 import { ApiResponse } from "../../ApiResponse";
+import { HTTPCodes } from "../../enums/httpcodes";
 
 export class Settings {
-    private db;
-
-    constructor() {
-        this.db = DatabaseConnection.Instance.connection;
-    }
 
     updateSetting(key, value) {
 
@@ -53,6 +49,48 @@ export class Settings {
                 }
             })
         })  
+    }
+
+    getMultipleSettings(req,res){
+        let keys = Object.getOwnPropertyNames(req.query)
+
+        if(keys.length === 0 || keys === null || keys === undefined){
+            res.status(HTTPCodes.BAD_REQUEST).json({error:'missing parameters'})
+        }
+
+        let keys_string = DatabaseConnection.Instance.connection.escape(keys);
+        const sql = `select setting_key,setting_value from ocms_settings WHERE setting_key in (${keys_string})`
+
+        QueryUtils.Query(sql, [keys_string])
+        .then(rows => {
+
+            let responseObject = {}
+
+            rows.forEach(element => {
+                responseObject[element.setting_key] = element.setting_value
+            });
+
+            return responseObject;
+        })
+        .then((responseObject:object) => {
+
+            keys.forEach(element => {
+                if(!responseObject.hasOwnProperty(element)){
+                    responseObject[element] = null;
+                }
+            });
+
+            return responseObject
+
+        })
+        .then(responseObject => {
+            res.json({settings:responseObject})
+        })
+        .catch(err =>{
+            res.json(err)
+        })
+
+
     }
 
 }
