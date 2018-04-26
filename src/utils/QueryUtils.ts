@@ -1,5 +1,6 @@
 import { DatabaseConnection } from '../db';
 import { ApiError } from '../ApiError';
+import { HTTPCodes } from '../enums/httpcodes';
 
 export class QueryUtils {
 
@@ -28,7 +29,7 @@ export class QueryUtils {
             DatabaseConnection.Instance.connection.query(sql, values,
                 (err, results) => {
                     if (err) {
-                        reject(err);
+                        reject(new ApiError(HTTPCodes.BAD_REQUEST, err.message));
                     }
                     else {
                         resolve(results);

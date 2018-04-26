@@ -9,6 +9,8 @@ import { resolve } from 'path';
 import { PageValidator } from '../../_shared/pagevalidator';
 import { HTTPCodes } from '../../enums/httpcodes';
 
+
+
 export class Pages {
 
     getPageByID = (req,res) => {
@@ -42,6 +44,26 @@ export class Pages {
             res.send(err);
         })
     }
+
+    private PermalinkExists(permalink: string){
+
+        const sql = 'select page_id from ocms_pages where permalink = ?'
+
+        return new Promise((resolve, reject) => { 
+            QueryUtils.Query(sql, [permalink]).then(result =>{
+                if(result.length > 0){
+                    resolve(true)
+                }
+                else
+                {
+                    resolve(false)
+                }
+            })
+            .catch(err =>{
+                reject(err)
+            })
+        })
+    }
     
     /**
      * Returns all pages
@@ -68,7 +90,7 @@ export class Pages {
 
             let query = page.generateUpdateQuery(req.body)
             if(query !== null){
-                QueryUtils.Query(query)
+                return QueryUtils.Query(query)
             }
         })
         .then(() => {
@@ -97,7 +119,8 @@ export class Pages {
             res.json(new ApiResponse(200, "All good!"));
         })
         .catch((err) => {
-            res.status(err.statuscode).json(err);
+            console.log(err)
+            res.status(err.error.statuscode).json(err);
         })
 
     }

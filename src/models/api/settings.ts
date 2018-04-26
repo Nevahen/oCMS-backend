@@ -56,6 +56,7 @@ export class Settings {
 
         if(keys.length === 0 || keys === null || keys === undefined){
             res.status(HTTPCodes.BAD_REQUEST).json({error:'missing parameters'})
+            return
         }
 
         let keys_string = DatabaseConnection.Instance.connection.escape(keys);
@@ -89,8 +90,5 @@ export class Settings {
         .catch(err =>{
             res.json(err)
         })
-
-
     }
-
 }

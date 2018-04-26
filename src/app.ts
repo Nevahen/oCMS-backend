@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser';
 import * as apiIndexRoute from './routes/index';
 import * as requireAuth from './lib/requireauth-middleware'
 import * as path from 'path'
+import { DatabaseConnection } from './db';
 
 class App{
 
@@ -14,6 +15,7 @@ class App{
         this.middleware();
         this.routes();
         
+        DatabaseConnection.Instance;
     }
 
     private initSettings(){

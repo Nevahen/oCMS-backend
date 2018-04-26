@@ -55,7 +55,7 @@ generateInsertQuery(){
 
         const SQL = "INSERT INTO ocms_pages SET ?"
 
-        let properties = ["title", "content"]
+        let properties = ["title", "content", "permalink"]
         let obj = {};
 
         properties.forEach(x => {
@@ -88,7 +88,7 @@ generateUpdateQuery(updateData){
         }
 
         const sql = "UPDATE ocms_pages SET ? WHERE page_id = ?";
-        const properties = ["title", "content", "author", "status"]
+        const properties = ["title", "content", "author", "status", "permalink"]
 
         let updateObject = {}
 
