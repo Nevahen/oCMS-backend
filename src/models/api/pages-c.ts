@@ -51,13 +51,7 @@ export class Pages {
 
         return new Promise((resolve, reject) => { 
             QueryUtils.Query(sql, [permalink]).then(result =>{
-                if(result.length > 0){
-                    resolve(true)
-                }
-                else
-                {
-                    resolve(false)
-                }
+                result.length > 0 ? resolve(true) : resolve(false);
             })
             .catch(err =>{
                 reject(err)
@@ -185,7 +179,7 @@ export class Pages {
             .then(()     => QueryUtils.Query(sql, [page_id]))
             .then(()     => res.send(new ApiResponse(400, "All good!")))
             .catch((err) => res.status(HTTPCodes.INTERNAL_ERROR).send(new ApiError(500, err)))
-        }
+    }
 
     getPageTags(page_id: number) {
 

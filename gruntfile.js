@@ -10,7 +10,7 @@ module.exports = function(grunt) {
           }],
           options: {
             module: "commonjs",
-            target: "es6",
+            target: "es2016",
             sourceMap: false,
             rootDir: "src"
           }
