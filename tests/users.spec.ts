@@ -17,15 +17,28 @@ describe('Pagevalidating', () =>{
         user = new User({
             userid:2,
             username:"testi",
+            password:"null",
+            firstname:"test",
+            lastname:23,
             malic:"a"
         });
     })
 
 
-    it('Should be rejected, too short title', () =>{
-        console.log(user)
-       return user;
-    });
+    it('Should not have property malic', () =>{
+      
+        chai.expect(user).to.not.have.property('malic')
 
+       })
 
-})
+    it('Generate query', () =>{
+        return user.generateInsertQuery().catch(err => {
+            console.log(err)
+        })
+        .then(result => {
+            chai.expect(result).to.be.equal("INSERT INTO ocms_pages SET `username, firstname, lastname, password` = NULL")
+        })
+
+    })
+
+});
