@@ -1,5 +1,6 @@
 import { QueryUtils } from "../utils/QueryUtils";
 import { ApiError } from "../ApiError";
+import { User } from "./user";
 
 export class UserController{
     
@@ -26,10 +27,28 @@ export class UserController{
     }
 
 
-    CreateUser(data){
+    async createUser(req, res){
 
-        
+        let userData = req.body
+        console.log(userData)
+        let user = new User(userData)
 
+        let isValid = await user.validate()
+
+        if(isValid){
+
+            let query = await user.generateInsertQuery()
+
+            QueryUtils.Query(query)
+            .then(result => {
+                res.send('User Created!')
+            })
+            .catch(x => {
+                console.log(x)
+                res.status(500).send('Internal server error')}
+            )
+
+        }
     }
 
 

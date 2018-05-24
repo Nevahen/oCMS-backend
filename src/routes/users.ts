@@ -30,4 +30,6 @@ router.get('/:id', (req, res) => {
 
 })
 
+router.post('/', userController.createUser)
+
 export = router;
