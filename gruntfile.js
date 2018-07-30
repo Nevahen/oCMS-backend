@@ -1,33 +1,27 @@
 module.exports = function(grunt) {
-    "use strict";
-  
-    grunt.initConfig({
-      ts: {
-        app: {
-          files: [{
-            src: ["src/\*\*/\*.ts", "!src/.baseDir.ts"],
+  "use strict";
+
+  grunt.initConfig({
+    ts: {
+      app: {
+        tsconfig: "./tsconfig.json",
+        files: [
+          {
+            src: ["src/**/*.ts", "!src/.baseDir.ts"],
             dest: "./dist"
-          }],
-          options: {
-            module: "commonjs",
-            target: "es2016",
-            sourceMap: false,
-            rootDir: "src"
           }
-        }
-      },
-      watch: {
-        ts: {
-          files: ["src/\*\*/\*.ts"],
-          tasks: ["ts"]
-        }
+        ]
       }
-    });
-  
-    grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("grunt-ts");
-    grunt.registerTask("default", [
-      "ts"
-    ]);
-  
-  };
+    },
+    watch: {
+      ts: {
+        files: ["src/**/*.ts"],
+        tasks: ["ts"]
+      }
+    }
+  });
+
+  grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks("grunt-ts");
+  grunt.registerTask("default", ["ts"]);
+};
