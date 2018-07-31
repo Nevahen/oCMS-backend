@@ -2,6 +2,8 @@ require("dotenv").config();
 import app from "./app";
 import * as http from "http";
 import { Sequelize } from "sequelize-typescript";
+import * as Models from "./models_sequelize/index";
+import Page from "./models_sequelize/page";
 import User from "./models_sequelize/user";
 
 const port = 80;
@@ -18,19 +20,7 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASS
 });
 
-sequelize.addModels([__dirname + "/models_sequelize"]);
-
-sequelize.authenticate().then(async () => {
-  console.log(sequelize);
-
-  User.findOne({
-    where: {
-      username: "osku"
-    }
-  }).then(result => {
-    console.log(result);
-  });
-});
+sequelize.addModels([Page, User]);
 
 server.listen(port);
 server.on("error", onError);

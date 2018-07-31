@@ -1,5 +1,6 @@
 {
   "compileOnSave": false,
+  "exclude": ["node_modules", "**/*.spec.ts"],
   "compilerOptions": {
     "outDir": "./dist/",
     "sourceMap": true,
@@ -10,6 +11,7 @@
     "experimentalDecorators": true,
     "target": "es6",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2017", "dom"]
+    "lib": ["es2017", "dom"],
+    "rootDir": "./src"
   }
 }

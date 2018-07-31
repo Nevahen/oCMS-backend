@@ -3,6 +3,7 @@ import * as bodyParser from "body-parser";
 import { QueryUtils } from "../utils/QueryUtils";
 import { UserController } from "../models/user-controller";
 import User from "../models_sequelize/user";
+import Page from "../models_sequelize/page";
 
 var router = express.Router();
 const userController = new UserController();
@@ -10,23 +11,23 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
 router.get("/", (req, res) => {
-  test();
+  res.send("oops: work in progress1");
 });
 
-function test() {
-  let test = User.build({ username: "testi" });
-  test.save();
-}
-
 router.get("/:id", (req, res) => {
-  userController
-    .GetUserInfoAll(req.params.id)
-    .then(result => {
-      res.json(result);
+  User.find({
+    where: {
+      userid: req.params.id
+    }
+  })
+    .then(user => {
+      if (user !== null) {
+        res.send(user);
+      } else {
+        res.status(404).send({ error: "not found" });
+      }
     })
-    .catch(err => {
-      res.status(err.error.statuscode).send(err);
-    });
+    .catch(err => res.send(err));
 });
 
 //router.post('/', userController.createUser)
