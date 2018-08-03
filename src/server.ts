@@ -5,6 +5,8 @@ import { Sequelize } from "sequelize-typescript";
 import * as Models from "./models_sequelize/index";
 import Page from "./models_sequelize/page";
 import User from "./models_sequelize/user";
+import PageTag from "./models_sequelize/pagetag";
+import PageTagRelation from "./models_sequelize/pagetagRelation";
 
 const port = 80;
 
@@ -20,7 +22,7 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASS
 });
 
-sequelize.addModels([Page, User]);
+sequelize.addModels([Page, User, PageTag, PageTagRelation]);
 
 server.listen(port);
 server.on("error", onError);

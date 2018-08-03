@@ -6,9 +6,12 @@ import {
   DataType,
   ForeignKey,
   PrimaryKey,
-  BelongsTo
+  BelongsTo,
+  BelongsToMany
 } from "sequelize-typescript";
 import User from "./user";
+import PageTag from "./pagetag";
+import PageTagRelation from "./pagetagRelation";
 
 @Table({
   tableName: "ocms_pages"
@@ -29,4 +32,7 @@ export default class Page extends Model<Page> {
 
   @Column(DataType.INTEGER) status: number;
   @Column(DataType.STRING) permalink: string;
+
+  @BelongsToMany(() => PageTag, () => PageTagRelation)
+  tags: PageTag[];
 }
